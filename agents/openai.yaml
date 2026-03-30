@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Branch Single Commit Review"
+  short_description: "Review one commit from a feature branch"
+  default_prompt: "Use $feature-branch-single-commit-review to review up to 10 single-commit diffs on this feature branch, note whether each finding is fixed in the latest commit, and save the report under docs/code_review/."
