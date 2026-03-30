@@ -104,22 +104,22 @@ description: Use this skill when reviewing a feature branch that was created fro
 
 例:
 
-- `feature/KP-1111` -> `feature-KP-1111`
-- `feature/KP-1111_fix-mail` -> `feature-KP-1111_fix-mail`
+- `feature/TASK-1111` -> `feature-TASK-1111`
+- `feature/TASK-1111_fix-mail` -> `feature-TASK-1111_fix-mail`
 
 保存先生成は `scripts/build_report_path.sh` を使ってよいです。
 
 ```bash
 mkdir -p docs/code_review
-report_path="$(bash scripts/build_report_path.sh --branch feature/KP-1111 --timestamp 202603301805)"
-# => docs/code_review/feature-KP-1111_202603301805.md
+report_path="$(bash scripts/build_report_path.sh --branch feature/TASK-1111 --timestamp 202603301805)"
+# => docs/code_review/feature-TASK-1111_202603301805.md
 ```
 
 続きレビューでは既存レポートを再利用します。
 
 ```bash
-report_path="$(bash scripts/build_report_path.sh --branch feature/KP-1111 --reuse-latest)"
-# => docs/code_review/feature-KP-1111_202603301805.md
+report_path="$(bash scripts/build_report_path.sh --branch feature/TASK-1111 --reuse-latest)"
+# => docs/code_review/feature-TASK-1111_202603301805.md
 ```
 
 レポート本文は [references/review-policy.md](references/review-policy.md) のテンプレートに沿って組み立て、最終的にそのままファイルへ保存します。

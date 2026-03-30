@@ -24,7 +24,7 @@
 
 例:
 
-- `feature/KP-1111` -> `docs/code_review/feature-KP-1111_202603301230.md`
+- `feature/TASK-1111` -> `docs/code_review/feature-TASK-1111_202603301230.md`
 
 ## 使い方
 

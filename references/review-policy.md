@@ -35,7 +35,7 @@
 - Reviewed commit pairs: 3
 - Remaining commit pairs: 9
 - Threshold: middle 以上
-- Saved path: docs/code_review/feature-KP-1111_202603301230.md
+- Saved path: docs/code_review/feature-TASK-1111_202603301230.md
 
 ## Findings
 
