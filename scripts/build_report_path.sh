@@ -3,11 +3,12 @@ set -euo pipefail
 
 branch=""
 timestamp=""
+reuse_latest=0
 
 usage() {
   cat <<'EOF'
 Usage:
-  build_report_path.sh [--branch <branch>] [--timestamp <YYYYMMDDHHMM>]
+  build_report_path.sh [--branch <branch>] [--timestamp <YYYYMMDDHHMM>] [--reuse-latest]
 
 Outputs:
   docs/code_review/<sanitized-branch>_<timestamp>.md
@@ -23,6 +24,10 @@ while [[ $# -gt 0 ]]; do
     --timestamp)
       timestamp="${2:-}"
       shift 2
+      ;;
+    --reuse-latest)
+      reuse_latest=1
+      shift 1
       ;;
     -h|--help)
       usage
@@ -50,5 +55,13 @@ if [[ -z "$timestamp" ]]; then
 fi
 
 sanitized_branch="${branch//\//-}"
+
+if [[ "$reuse_latest" -eq 1 ]]; then
+  latest_report="$(find docs/code_review -maxdepth 1 -type f -name "${sanitized_branch}_*.md" 2>/dev/null | sort | tail -n 1)"
+  if [[ -n "$latest_report" ]]; then
+    printf '%s\n' "$latest_report"
+    exit 0
+  fi
+fi
 
 printf 'docs/code_review/%s_%s.md\n' "$sanitized_branch" "$timestamp"

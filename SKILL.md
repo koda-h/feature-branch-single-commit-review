@@ -54,9 +54,11 @@ description: Use this skill when reviewing a feature branch that was created fro
    - `修正済み`
    - `要確認`
 10. 指摘が 0 件でも、レビュー対象範囲・閾値・確認した差分ペア数はレポートに残す。
-11. `scripts/build_report_path.sh` で保存先パスを組み立てる。
-12. レビュー結果を `docs/code_review/<sanitized-feature-branch>_YYYYMMDDHHMM.md` に保存し、最後に保存先パスを明示する。
-13. 未レビューの差分ペアが残っている場合は、そこで止めてユーザーに続行確認を返す。確認文には「デフォルトは 10 件」「件数指定でも続けられる」を含める。
+11. 保存先パスを決める。
+12. 初回レビューなら `scripts/build_report_path.sh` で新規パスを作る。続きレビューなら `scripts/build_report_path.sh --reuse-latest` で既存レポートを再利用する。
+13. 続きレビューでは新しいファイルを作らず、先に作成済みのレポートへ追記する。
+14. レビュー結果を `docs/code_review/<sanitized-feature-branch>_YYYYMMDDHHMM.md` に保存または追記し、最後に保存先パスを明示する。
+15. 未レビューの差分ペアが残っている場合は、そこで止めてユーザーに続行確認を返す。確認文には「デフォルトは 10 件」「件数指定でも続けられる」を含める。
 
 ## Target Commit Rules
 
@@ -89,6 +91,7 @@ description: Use this skill when reviewing a feature branch that was created fro
   - 最新コミットでの状態: `未修正` / `修正済み` / `要確認`
 - 各差分ペアのレビューでは、指摘がある場合もない場合も最新コミットを一度は確認する
 - 1 回の実行でレビューした件数と、残件数を最後に明記する
+- 続きレビューでは、新規ファイルを作らず同一ブランチの既存レポートへ追記する
 - 指摘がない場合は `指摘事項なし` と明記する
 - 憶測で埋めず、差分から断定できない点は `要確認` とする
 - レビュー対象外の範囲がある場合は `対象外` セクションに分ける
@@ -109,6 +112,13 @@ description: Use this skill when reviewing a feature branch that was created fro
 ```bash
 mkdir -p docs/code_review
 report_path="$(bash scripts/build_report_path.sh --branch feature/KP-1111 --timestamp 202603301805)"
+# => docs/code_review/feature-KP-1111_202603301805.md
+```
+
+続きレビューでは既存レポートを再利用します。
+
+```bash
+report_path="$(bash scripts/build_report_path.sh --branch feature/KP-1111 --reuse-latest)"
 # => docs/code_review/feature-KP-1111_202603301805.md
 ```
 
@@ -134,6 +144,6 @@ report_path="$(bash scripts/build_report_path.sh --branch feature/KP-1111 --time
 - `scripts/list_review_ranges.sh`
   - `develop` との分岐点から、`merge-base -> 1件目 -> 2件目 ...` のレビュー順序を返す
 - `scripts/build_report_path.sh`
-  - 現在ブランチ名をファイル名向けに正規化し、`docs/code_review/` 配下の保存先パスを返す
+  - 現在ブランチ名をファイル名向けに正規化し、初回は新規パス、続きでは既存レポートパスを返す
 - [references/review-policy.md](references/review-policy.md)
   - レベル定義、出力テンプレート、保存時の書式をまとめている
