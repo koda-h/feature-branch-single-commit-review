@@ -49,7 +49,7 @@ description: Use this skill when reviewing a feature branch that was created fro
 6. 差分ペアで問題候補を見つけたら、必ず `git diff <to_commit>..HEAD` や `git show HEAD` も確認し、最新コミット時点で修正済みかどうかを判定する。
 7. まず `high` を探し、次に `middle`、最後に `low` を整理する。`low` は閾値が `low` のときだけ出す。
 8. 各指摘は、どの差分ペアで見つかったか分かるように `1. \`from_short\` -> \`to_short\`` の見出しの下にまとめる。
-9. 各指摘には `最新コミットでの状態` を明記する:
+9. 各指摘には `最新コミットでの状態` を文頭で明記する:
    - `未修正`
    - `修正済み`
    - `要確認`
@@ -83,6 +83,7 @@ description: Use this skill when reviewing a feature branch that was created fro
 - 各重大度セクションでは、差分ペアごとに連番を振る:
   - 例: `1. `a9e265be` -> `e5837e7a``
 - 各指摘には少なくとも次を含める:
+  - 文頭の状態ラベル: `[未修正]` / `[修正済み]` / `[要確認]`
   - レベル: `high` / `middle` / `low`
   - どの差分ペアでの指摘か
   - 対象ファイルと位置
