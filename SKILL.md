@@ -46,19 +46,21 @@ description: Use this skill when reviewing a feature branch that was created fro
 3. 今回レビューする件数を決める。指定がなければ 10 件、指定があればその件数を使う。
 4. 列挙された差分ペアのうち、今回のバッチ対象だけを先頭から順番にレビューする。
 5. 各ペアについて `git show --stat --summary <to_commit>` と `git diff <from_commit>..<to_commit>` で差分を読む。
-6. 差分ペアで問題候補を見つけたら、必ず `git diff <to_commit>..HEAD` や `git show HEAD` も確認し、最新コミット時点で修正済みかどうかを判定する。
-7. まず `high` を探し、次に `middle`、最後に `low` を整理する。`low` は閾値が `low` のときだけ出す。
-8. 各指摘は、どの差分ペアで見つかったか分かるように `1. \`from_short\` -> \`to_short\`` の見出しの下にまとめる。
-9. 各指摘には `最新コミットでの状態` を文頭で明記する:
+6. 差分ペアで問題候補を見つけたら、必ず対象箇所の hunk を抜き出し、`変更前` と `変更後` が分かる差分抜粋を用意する。表示は GitHub コードレビューに近い `diff` コードブロックを優先し、必要最小限の行数に絞る。
+7. 必ず `git diff <to_commit>..HEAD` や `git show HEAD` も確認し、最新コミット時点で修正済みかどうかを判定する。
+8. まず `high` を探し、次に `middle`、最後に `low` を整理する。`low` は閾値が `low` のときだけ出す。
+9. 各指摘は、どの差分ペアで見つかったか分かるように `1. \`from_short\` -> \`to_short\`` の見出しの下にまとめる。
+10. 各指摘には `最新コミットでの状態` を文頭で明記する:
    - `未修正`
    - `修正済み`
    - `要確認`
-10. 指摘が 0 件でも、レビュー対象範囲・閾値・確認した差分ペア数はレポートに残す。
-11. 保存先パスを決める。
-12. 初回レビューなら `scripts/build_report_path.sh` で新規パスを作る。続きレビューなら `scripts/build_report_path.sh --reuse-latest` で既存レポートを再利用する。
-13. 続きレビューでは新しいファイルを作らず、先に作成済みのレポートへ追記する。
-14. レビュー結果を `docs/code_review/<sanitized-feature-branch>_YYYYMMDDHHMM.md` に保存または追記し、最後に保存先パスを明示する。
-15. 未レビューの差分ペアが残っている場合は、そこで止めてユーザーに続行確認を返す。確認文には「デフォルトは 10 件」「件数指定でも続けられる」を含める。
+11. 各指摘には、対象ファイルと位置の説明に加えて `変更前` / `変更後` の差分抜粋を必ず含める。必要に応じて前後数行の文脈を残してよいが、レビュー論点に関係しない行は省く。
+12. 指摘が 0 件でも、レビュー対象範囲・閾値・確認した差分ペア数はレポートに残す。
+13. 保存先パスを決める。
+14. 初回レビューなら `scripts/build_report_path.sh` で新規パスを作る。続きレビューなら `scripts/build_report_path.sh --reuse-latest` で既存レポートを再利用する。
+15. 続きレビューでは新しいファイルを作らず、先に作成済みのレポートへ追記する。
+16. レビュー結果を `docs/code_review/<sanitized-feature-branch>_YYYYMMDDHHMM.md` に保存または追記し、最後に保存先パスを明示する。
+17. 未レビューの差分ペアが残っている場合は、そこで止めてユーザーに続行確認を返す。確認文には「デフォルトは 10 件」「件数指定でも続けられる」を含める。
 
 ## Target Commit Rules
 
@@ -89,8 +91,11 @@ description: Use this skill when reviewing a feature branch that was created fro
   - 対象ファイルと位置
   - 何が問題か
   - どう壊れるか、または何が不足しているか
+  - `変更前` と `変更後` が分かる差分抜粋
   - 最新コミットでの状態: `未修正` / `修正済み` / `要確認`
 - 各差分ペアのレビューでは、指摘がある場合もない場合も最新コミットを一度は確認する
+- 差分抜粋は GitHub コードレビューに近い `diff` コードブロックを優先し、`-` 行を変更前、`+` 行を変更後として読める形にする
+- 差分抜粋はレビュー論点に必要な最小限の hunk に絞る。長い差分をそのまま貼らない
 - 1 回の実行でレビューした件数と、残件数を最後に明記する
 - 続きレビューでは、新規ファイルを作らず同一ブランチの既存レポートへ追記する
 - 指摘がない場合は `指摘事項なし` と明記する
@@ -139,6 +144,7 @@ report_path="$(bash scripts/build_report_path.sh --branch feature/TASK-1111 --re
 - `$feature-branch-single-commit-review で次の 5 件をレビューして`
 - `$feature-branch-single-commit-review で middle 以上だけレビューして`
 - `$feature-branch-single-commit-review で各指摘に diff 範囲と、最新コミットで修正済みかどうかを付けてレビューして`
+- `$feature-branch-single-commit-review で GitHub コードレビューのように変更前と変更後の差分も出して`
 
 ## Resources
 
